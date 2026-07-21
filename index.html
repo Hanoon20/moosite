@@ -282,20 +282,35 @@
 
   /* REVIEWS */
   #reviews{background:var(--cream-2);}
-  .review-track{margin-top:80px;display:flex;gap:26px;overflow-x:auto;padding-bottom:10px;scroll-snap-type:x mandatory;}
-  .review-track::-webkit-scrollbar{height:4px;}
-  .review-track::-webkit-scrollbar-thumb{background:var(--gold);border-radius:4px;}
-  .review-card{
-    scroll-snap-align:start;min-width:340px;background:rgba(255,255,255,.6);backdrop-filter:blur(10px);
-    border:1px solid rgba(255,255,255,.7);border-radius:22px;padding:38px;flex-shrink:0;
+  .marquee-wrap{
+    margin-top:70px;overflow:hidden;position:relative;
+    -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%);
+    mask-image:linear-gradient(90deg,transparent 0,#000 6%,#000 94%,transparent 100%);
   }
-  .stars{color:var(--gold);letter-spacing:2px;margin-bottom:18px;font-size:.9rem;}
-  .review-card p{font-size:.95rem;line-height:1.75;color:#3b4a43;font-weight:300;}
-  .reviewer{display:flex;align-items:center;gap:14px;margin-top:26px;}
-  .avatar{width:44px;height:44px;border-radius:50%;background:var(--forest);color:var(--cream);
-    display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:1rem;}
-  .reviewer .name{font-weight:600;font-size:.9rem;color:var(--forest-2);}
-  .reviewer .loc{font-size:.78rem;color:#5a6a62;}
+  .marquee-track{
+    display:flex;gap:18px;width:max-content;
+    animation:marquee 38s linear infinite;
+  }
+  .marquee-wrap:hover .marquee-track{animation-play-state:paused;}
+  @keyframes marquee{
+    from{transform:translateX(0);}
+    to{transform:translateX(-50%);}
+  }
+  .post-card{
+    width:270px;flex-shrink:0;background:rgba(255,255,255,.65);backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,.75);border-radius:18px;padding:20px;
+    transition:transform .35s ease, box-shadow .35s ease;
+  }
+  .post-card:hover{transform:translateY(-5px);box-shadow:0 24px 40px -22px rgba(33,64,50,.3);}
+  .post-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+  .avatar{width:36px;height:36px;border-radius:50%;background:var(--forest);color:var(--cream);
+    display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:.9rem;flex-shrink:0;}
+  .who .name{font-weight:700;font-size:.82rem;color:var(--forest-2);display:flex;align-items:center;gap:4px;}
+  .who .name .verified{color:var(--gold);font-size:.7rem;}
+  .who .handle{font-size:.72rem;color:#7a8880;}
+  .stars{color:var(--gold);letter-spacing:1px;margin-bottom:8px;font-size:.72rem;}
+  .post-card p{font-size:.83rem;line-height:1.55;color:#3b4a43;font-weight:400;margin-bottom:14px;}
+  .post-foot{display:flex;gap:16px;font-size:.72rem;color:#7a8880;border-top:1px solid rgba(33,64,50,.08);padding-top:10px;}
 
   /* GALLERY */
   #gallery{background:var(--cream);}
@@ -365,7 +380,7 @@
 </div>
 
 <header id="siteHeader">
-  <div class="brand"><img src="assets/logo.png" alt="MooFresh logo"/> MooFresh</div>
+  <div class="brand"><img data-img="logo" alt="MooFresh logo"/> MooFresh</div>
   <nav>
     <ul>
       <li><a href="#why">Why MooFresh</a></li>
@@ -397,7 +412,7 @@
       <div class="ring ring-1"></div>
       <div class="glass-plate"></div>
       <div id="productWrap">
-        <img id="productImg" src="assets/product.jpg" alt="MooFresh Pure Goat Milk bottle"/>
+        <img id="productImg" data-img="product" alt="MooFresh Pure Goat Milk bottle"/>
       </div>
     </div>
   </div>
@@ -448,7 +463,7 @@
   <div class="showcase-grid">
     <div class="showcase-visual reveal-scale">
       <span class="showcase-tag">Signature Bottle</span>
-      <img src="assets/product.jpg" alt="MooFresh Pure Goat Milk bottle in a field"/>
+      <img data-img="product" alt="MooFresh Pure Goat Milk bottle in a field"/>
     </div>
     <div class="showcase-copy reveal">
       <h3 class="serif" style="font-size:1.8rem;font-weight:400;color:var(--forest-2);margin-bottom:8px;">Pure Goat Milk — 500ml</h3>
@@ -498,26 +513,68 @@
 <section id="reviews" class="section-pad">
   <div class="kicker">Customer Stories</div>
   <h2 class="section-title">Loved by families across the island</h2>
-  <div class="review-track">
-    <div class="review-card reveal">
-      <div class="stars">★★★★★</div>
-      <p>MooFresh has replaced regular milk in our home completely. My children digest it so much better, and the taste is wonderfully clean.</p>
-      <div class="reviewer"><div class="avatar">N</div><div><div class="name">Nadeesha P.</div><div class="loc">Colombo</div></div></div>
-    </div>
-    <div class="review-card reveal">
-      <div class="stars">★★★★★</div>
-      <p>You can taste the freshness. The bottle, the branding, everything feels premium — this is a Sri Lankan brand I'm proud to buy.</p>
-      <div class="reviewer"><div class="avatar">R</div><div><div class="name">Roshan K.</div><div class="loc">Kandy</div></div></div>
-    </div>
-    <div class="review-card reveal">
-      <div class="stars">★★★★★</div>
-      <p>My doctor recommended goat milk for my son's sensitive stomach. MooFresh was the first brand he actually enjoyed drinking.</p>
-      <div class="reviewer"><div class="avatar">S</div><div><div class="name">Sanduni F.</div><div class="loc">Negombo</div></div></div>
-    </div>
-    <div class="review-card reveal">
-      <div class="stars">★★★★★</div>
-      <p>Delivery is always cold and on time. It's become part of our weekly routine now — worth every rupee.</p>
-      <div class="reviewer"><div class="avatar">A</div><div><div class="name">Amila W.</div><div class="loc">Galle</div></div></div>
+  <div class="marquee-wrap reveal">
+    <div class="marquee-track" id="marqueeTrack">
+      <div class="post-card">
+        <div class="post-head"><div class="avatar">N</div><div class="who"><div class="name">Nadeesha P.<span class="verified">✓</span></div><div class="handle">@nadeesha_p · Colombo</div></div></div>
+        <div class="stars">★★★★★</div>
+        <p>Replaced regular milk completely — my kids digest it so much better. Clean, honest taste. 🐐🥛</p>
+        <div class="post-foot"><span>❤ 128</span><span>💬 14</span><span>↗ 9</span></div>
+      </div>
+      <div class="post-card">
+        <div class="post-head"><div class="avatar">R</div><div class="who"><div class="name">Roshan K.<span class="verified">✓</span></div><div class="handle">@roshan.k · Kandy</div></div></div>
+        <div class="stars">★★★★★</div>
+        <p>You can taste the freshness. The bottle, the branding — genuinely premium. Proud to buy Sri Lankan. 🇱🇰</p>
+        <div class="post-foot"><span>❤ 96</span><span>💬 7</span><span>↗ 5</span></div>
+      </div>
+      <div class="post-card">
+        <div class="post-head"><div class="avatar">S</div><div class="who"><div class="name">Sanduni F.<span class="verified">✓</span></div><div class="handle">@sandunif · Negombo</div></div></div>
+        <div class="stars">★★★★★</div>
+        <p>Doctor recommended goat milk for my son's sensitive tummy — first brand he actually enjoys. 💛</p>
+        <div class="post-foot"><span>❤ 214</span><span>💬 22</span><span>↗ 18</span></div>
+      </div>
+      <div class="post-card">
+        <div class="post-head"><div class="avatar">A</div><div class="who"><div class="name">Amila W.<span class="verified">✓</span></div><div class="handle">@amila_w · Galle</div></div></div>
+        <div class="stars">★★★★★</div>
+        <p>Always cold, always on time. Part of our weekly routine now — worth every rupee.</p>
+        <div class="post-foot"><span>❤ 71</span><span>💬 4</span><span>↗ 3</span></div>
+      </div>
+      <div class="post-card">
+        <div class="post-head"><div class="avatar">T</div><div class="who"><div class="name">Tharindu M.<span class="verified">✓</span></div><div class="handle">@tharindu_m · Kurunegala</div></div></div>
+        <div class="stars">★★★★★</div>
+        <p>Switched the whole family over. Lighter, gentler, and it just feels like real farm milk. 🌿</p>
+        <div class="post-foot"><span>❤ 143</span><span>💬 11</span><span>↗ 8</span></div>
+      </div>
+      <div class="post-card" aria-hidden="true">
+        <div class="post-head"><div class="avatar">N</div><div class="who"><div class="name">Nadeesha P.<span class="verified">✓</span></div><div class="handle">@nadeesha_p · Colombo</div></div></div>
+        <div class="stars">★★★★★</div>
+        <p>Replaced regular milk completely — my kids digest it so much better. Clean, honest taste. 🐐🥛</p>
+        <div class="post-foot"><span>❤ 128</span><span>💬 14</span><span>↗ 9</span></div>
+      </div>
+      <div class="post-card" aria-hidden="true">
+        <div class="post-head"><div class="avatar">R</div><div class="who"><div class="name">Roshan K.<span class="verified">✓</span></div><div class="handle">@roshan.k · Kandy</div></div></div>
+        <div class="stars">★★★★★</div>
+        <p>You can taste the freshness. The bottle, the branding — genuinely premium. Proud to buy Sri Lankan. 🇱🇰</p>
+        <div class="post-foot"><span>❤ 96</span><span>💬 7</span><span>↗ 5</span></div>
+      </div>
+      <div class="post-card" aria-hidden="true">
+        <div class="post-head"><div class="avatar">S</div><div class="who"><div class="name">Sanduni F.<span class="verified">✓</span></div><div class="handle">@sandunif · Negombo</div></div></div>
+        <div class="stars">★★★★★</div>
+        <p>Doctor recommended goat milk for my son's sensitive tummy — first brand he actually enjoys. 💛</p>
+        <div class="post-foot"><span>❤ 214</span><span>💬 22</span><span>↗ 18</span></div>
+      </div>
+      <div class="post-card" aria-hidden="true">
+        <div class="post-head"><div class="avatar">A</div><div class="who"><div class="name">Amila W.<span class="verified">✓</span></div><div class="handle">@amila_w · Galle</div></div></div>
+        <div class="stars">★★★★★</div>
+        <p>Always cold, always on time. Part of our weekly routine now — worth every rupee.</p>
+        <div class="post-foot"><span>❤ 71</span><span>💬 4</span><span>↗ 3</span></div>
+      </div>
+      <div class="post-card" aria-hidden="true">
+        <div class="post-head"><div class="avatar">T</div><div class="who"><div class="name">Tharindu M.<span class="verified">✓</span></div><div class="handle">@tharindu_m · Kurunegala</div></div></div>
+        <div class="stars">★★★★★</div>
+        <p>Switched the whole family over. Lighter, gentler, and it just feels like real farm milk. 🌿</p>
+        <div class="post-foot"><span>❤ 143</span><span>💬 11</span><span>↗ 8</span></div>
+      </div>
     </div>
   </div>
 </section>
@@ -526,10 +583,10 @@
   <div class="kicker">Gallery</div>
   <h2 class="section-title">A closer look at the farm and the bottle</h2>
   <div class="masonry">
-    <div class="g-item reveal"><img src="assets/product.jpg" alt="Goat milk bottle in a green field"/></div>
-    <div class="g-item reveal"><img src="assets/product.jpg" alt="MooFresh bottle close-up"/></div>
-    <div class="g-item reveal"><img src="assets/product.jpg" alt="Goat milk bottle capped with gold lid"/></div>
-    <div class="g-item reveal"><img src="assets/product.jpg" alt="MooFresh label detail"/></div>
+    <div class="g-item reveal"><img data-img="product" alt="Goat milk bottle in a green field"/></div>
+    <div class="g-item reveal"><img data-img="product" alt="MooFresh bottle close-up"/></div>
+    <div class="g-item reveal"><img data-img="product" alt="Goat milk bottle capped with gold lid"/></div>
+    <div class="g-item reveal"><img data-img="product" alt="MooFresh label detail"/></div>
   </div>
 </section>
 
@@ -542,7 +599,7 @@
 <footer>
   <div class="foot-grid">
     <div>
-      <div class="foot-brand"><img src="assets/logo.png" alt="MooFresh logo"/> MooFresh</div>
+      <div class="foot-brand"><img data-img="logo" alt="MooFresh logo"/> MooFresh</div>
       <p class="small">Pure goat milk, bottled fresh from Sri Lanka's highland farms — naturally better, every single day.</p>
       <div class="social-row">
         <a href="#" aria-label="Facebook">f</a>
@@ -572,6 +629,8 @@
 
 <script src="https://unpkg.com/gsap@3.12.5/dist/gsap.min.js"></script>
 <script src="https://unpkg.com/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+<script src="images_data.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
