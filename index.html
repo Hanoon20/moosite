@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MooFresh — Pure Goat Milk. Naturally Better.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F8F5F0;
+    --cream-2:#F1ECE3;
+    --gold:#C8A96A;
+    --gold-soft:#DCC493;
+    --forest:#214032;
+    --forest-2:#152A21;
+    --ink:#111111;
+    --white:#FFFFFF;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Manrope',sans-serif;
+    overflow-x:hidden;
+    cursor:default;
+  }
+  h1,h2,h3,.serif{font-family:'Fraunces',serif;}
+  a{color:inherit;text-decoration:none;}
+  ::selection{background:var(--gold-soft);color:var(--forest-2);}
+
+  /* Custom cursor */
+  #cursor{
+    position:fixed;top:0;left:0;width:22px;height:22px;border-radius:50%;
+    border:1px solid var(--gold);pointer-events:none;z-index:9999;
+    transform:translate(-50%,-50%);transition:width .25s,height .25s,background .25s,border-color .25s;
+    mix-blend-mode:multiply;
+  }
+  #cursor.hover{width:50px;height:50px;background:rgba(200,169,106,.15);}
+
+  @media (max-width:900px){ #cursor{display:none;} }
+
+  /* Loader */
+  #loader{
+    position:fixed;inset:0;background:var(--forest-2);z-index:99999;
+    display:flex;align-items:center;justify-content:center;flex-direction:column;gap:18px;
+    transition:opacity .9s ease, visibility .9s ease;
+  }
+  #loader .mark{font-family:'Fraunces',serif;font-size:2.4rem;color:var(--cream);letter-spacing:.02em;
+    opacity:0;animation:fadeUp 1.1s ease forwards .15s;}
+  #loader .line{width:120px;height:1px;background:rgba(248,245,240,.25);position:relative;overflow:hidden;}
+  #loader .line span{position:absolute;left:0;top:0;height:100%;width:0;background:var(--gold);animation:load 1.8s ease forwards .3s;}
+  @keyframes load{to{width:100%;}}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+  #loader.hide{opacity:0;visibility:hidden;}
+
+  /* Nav */
+  header{
+    position:fixed;top:0;left:0;width:100%;z-index:500;
+    padding:26px 6vw;display:flex;align-items:center;justify-content:space-between;
+    transition:background .5s ease, padding .5s ease, box-shadow .5s ease;
+  }
+  header.scrolled{
+    background:rgba(248,245,240,.7);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+    padding:16px 6vw;box-shadow:0 1px 0 rgba(17,17,17,.06);
+  }
+  .brand{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-size:1.25rem;letter-spacing:.02em;color:var(--forest);}
+  .brand img{height:34px;width:auto;display:block;}
+  nav ul{display:flex;gap:42px;list-style:none;}
+  nav ul li a{
+    font-size:.82rem;letter-spacing:.08em;text-transform:uppercase;color:var(--forest);
+    position:relative;padding-bottom:4px;
+  }
+  nav ul li a::after{
+    content:'';position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--gold);
+    transition:width .35s ease;
+  }
+  nav ul li a:hover::after{width:100%;}
+  .nav-cta{
+    border:1px solid var(--forest);padding:10px 24px;border-radius:999px;font-size:.78rem;
+    letter-spacing:.08em;text-transform:uppercase;color:var(--forest);transition:all .4s ease;
+  }
+  .nav-cta:hover{background:var(--forest);color:var(--cream);}
+  .nav-toggle{display:none;}
+  @media(max-width:900px){
+    nav ul{display:none;}
+    .nav-toggle{display:block;font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;border:1px solid var(--forest);padding:9px 18px;border-radius:999px;}
+  }
+
+  section{position:relative;}
+
+  /* HERO */
+  #hero{
+    height:100vh;min-height:720px;display:flex;align-items:center;justify-content:center;
+    position:relative;overflow:hidden;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 12%, rgba(200,169,106,.16), transparent 60%),
+      radial-gradient(ellipse 60% 50% at 85% 85%, rgba(33,64,50,.10), transparent 60%),
+      linear-gradient(180deg, #FBF9F5 0%, var(--cream) 55%, #EFE9DD 100%);
+  }
+  #hero-canvas{position:absolute;inset:0;z-index:1;}
+  .blob{
+    position:absolute;border-radius:50%;filter:blur(60px);opacity:.5;pointer-events:none;
+  }
+  .blob-a{width:520px;height:520px;background:radial-gradient(circle,rgba(200,169,106,.28),transparent 70%);top:-140px;left:-120px;}
+  .blob-b{width:460px;height:460px;background:radial-gradient(circle,rgba(33,64,50,.16),transparent 70%);bottom:-160px;right:-100px;}
+
+  .hero-inner{
+    position:relative;z-index:5;width:100%;max-width:1400px;margin:0 auto;padding:0 6vw;
+    display:grid;grid-template-columns:1.05fr .95fr;align-items:center;gap:20px;
+  }
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:10px;font-size:.75rem;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--forest);opacity:.85;margin-bottom:26px;
+  }
+  .eyebrow::before{content:'';width:26px;height:1px;background:var(--gold);}
+  #hero h1{
+    font-size:clamp(2.8rem,5.4vw,4.6rem);line-height:1.04;font-weight:400;color:var(--forest-2);
+    letter-spacing:-.01em;
+  }
+  #hero h1 em{font-style:italic;color:var(--gold);font-weight:400;}
+  #hero p.lede{
+    margin-top:26px;max-width:440px;font-size:1.05rem;line-height:1.75;color:#3b4a43;font-weight:300;
+  }
+  .hero-actions{display:flex;gap:18px;margin-top:44px;flex-wrap:wrap;}
+  .btn-primary, .btn-ghost{
+    position:relative;padding:16px 36px;border-radius:999px;font-size:.8rem;letter-spacing:.08em;
+    text-transform:uppercase;overflow:hidden;display:inline-block;isolation:isolate;
+  }
+  .btn-primary{background:var(--forest);color:var(--cream);}
+  .btn-primary::before{
+    content:'';position:absolute;inset:0;background:var(--gold);transform:translateY(101%);
+    transition:transform .45s cubic-bezier(.16,1,.3,1);z-index:-1;
+  }
+  .btn-primary:hover::before{transform:translateY(0);}
+  .btn-primary:hover{color:var(--forest-2);}
+  .btn-ghost{border:1px solid var(--forest);color:var(--forest);}
+  .btn-ghost:hover{background:rgba(33,64,50,.06);}
+
+  .hero-stage{
+    position:relative;height:640px;display:flex;align-items:center;justify-content:center;
+  }
+  .glass-plate{
+    position:absolute;width:360px;height:360px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, rgba(255,255,255,.55), rgba(255,255,255,.05) 60%);
+    border:1px solid rgba(255,255,255,.5);backdrop-filter:blur(6px);
+    box-shadow:0 40px 90px -30px rgba(33,64,50,.35), inset 0 0 60px rgba(255,255,255,.4);
+  }
+  #productWrap{
+    position:relative;z-index:4;width:300px;perspective:1200px;
+  }
+  #productImg{
+    width:100%;display:block;border-radius:14px;
+    filter:drop-shadow(0 45px 55px rgba(17,17,17,.28));
+    transform-style:preserve-3d;will-change:transform;
+    transition:transform .15s ease-out;
+  }
+  .ring{
+    position:absolute;border-radius:50%;border:1px solid rgba(200,169,106,.35);
+  }
+  .ring-1{width:460px;height:460px;animation:spin 40s linear infinite;}
+  .ring-2{width:520px;height:520px;border-style:dashed;opacity:.4;animation:spin 60s linear infinite reverse;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  .scroll-cue{
+    position:absolute;bottom:38px;left:50%;transform:translateX(-50%);z-index:5;
+    display:flex;flex-direction:column;align-items:center;gap:10px;font-size:.68rem;
+    letter-spacing:.2em;text-transform:uppercase;color:var(--forest);opacity:.7;
+  }
+  .scroll-cue .stick{width:1px;height:38px;background:linear-gradient(var(--forest),transparent);
+    position:relative;overflow:hidden;}
+  .scroll-cue .stick::after{content:'';position:absolute;top:-100%;left:0;width:100%;height:100%;
+    background:var(--gold);animation:cue 2.2s ease-in-out infinite;}
+  @keyframes cue{0%{top:-100%;}60%{top:100%;}100%{top:100%;}}
+
+  /* reveal utility */
+  .reveal{opacity:0;transform:translateY(46px);transition:opacity 1s cubic-bezier(.16,1,.3,1), transform 1s cubic-bezier(.16,1,.3,1);}
+  .reveal.in{opacity:1;transform:translateY(0);}
+  .reveal-scale{opacity:0;transform:scale(.92);transition:opacity 1s ease, transform 1s cubic-bezier(.16,1,.3,1);}
+  .reveal-scale.in{opacity:1;transform:scale(1);}
+
+  .section-pad{padding:150px 6vw;}
+  .kicker{
+    font-size:.75rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);
+    display:flex;align-items:center;gap:10px;margin-bottom:20px;justify-content:center;
+  }
+  .kicker::before,.kicker::after{content:'';width:26px;height:1px;background:var(--gold);}
+  .section-title{
+    font-size:clamp(2rem,3.6vw,3rem);text-align:center;color:var(--forest-2);font-weight:400;
+    max-width:760px;margin:0 auto;line-height:1.2;
+  }
+  .section-sub{
+    text-align:center;max-width:560px;margin:20px auto 0;color:#5a6a62;font-size:1rem;font-weight:300;line-height:1.7;
+  }
+
+  /* WHY */
+  #why{background:var(--cream);}
+  .why-grid{
+    margin-top:80px;display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+    background:rgba(33,64,50,.12);border:1px solid rgba(33,64,50,.12);border-radius:24px;overflow:hidden;
+  }
+  @media(max-width:900px){.why-grid{grid-template-columns:1fr;}}
+  .why-card{
+    background:var(--cream);padding:50px 38px;transition:background .5s ease, transform .5s ease;
+    position:relative;
+  }
+  .why-card:hover{background:var(--white);transform:translateY(-4px);}
+  .why-card .ic{
+    width:52px;height:52px;border-radius:50%;border:1px solid var(--gold);display:flex;
+    align-items:center;justify-content:center;margin-bottom:26px;color:var(--gold);
+    transition:background .4s ease, color .4s ease;
+  }
+  .why-card:hover .ic{background:var(--gold);color:var(--forest-2);}
+  .why-card h3{font-size:1.2rem;font-weight:500;color:var(--forest-2);margin-bottom:10px;}
+  .why-card p{font-size:.92rem;color:#5a6a62;line-height:1.7;font-weight:300;}
+
+  /* PRODUCT SHOWCASE */
+  #showcase{background:linear-gradient(180deg,var(--cream) 0%, var(--cream-2) 100%);}
+  .showcase-grid{margin-top:80px;display:grid;grid-template-columns:1.1fr .9fr;gap:70px;align-items:center;}
+  @media(max-width:900px){.showcase-grid{grid-template-columns:1fr;}}
+  .showcase-visual{
+    position:relative;border-radius:28px;overflow:hidden;
+    background:linear-gradient(160deg, rgba(255,255,255,.7), rgba(255,255,255,.15));
+    border:1px solid rgba(255,255,255,.6);backdrop-filter:blur(10px);
+    padding:60px 40px;display:flex;align-items:center;justify-content:center;
+    box-shadow:0 50px 90px -40px rgba(33,64,50,.3);
+  }
+  .showcase-visual img{
+    width:78%;max-width:340px;filter:drop-shadow(0 30px 40px rgba(17,17,17,.22));
+    transition:transform .6s cubic-bezier(.16,1,.3,1);
+  }
+  .showcase-visual:hover img{transform:translateY(-14px) rotate(-2deg) scale(1.03);}
+  .showcase-tag{
+    position:absolute;top:28px;left:28px;background:var(--forest);color:var(--cream);
+    padding:8px 18px;border-radius:999px;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;
+  }
+  .spec-list{display:flex;flex-direction:column;gap:0;}
+  .spec-row{
+    display:flex;justify-content:space-between;padding:22px 0;border-bottom:1px solid rgba(33,64,50,.14);
+    font-size:.95rem;
+  }
+  .spec-row .k{color:#5a6a62;font-weight:300;}
+  .spec-row .v{color:var(--forest-2);font-weight:500;font-family:'Fraunces',serif;}
+  .showcase-cta{margin-top:40px;}
+
+  /* FARM STORY */
+  #farm{background:var(--forest-2);color:var(--cream);position:relative;overflow:hidden;}
+  #farm::before{
+    content:'';position:absolute;inset:0;
+    background:radial-gradient(ellipse 60% 50% at 20% 20%, rgba(200,169,106,.14), transparent 60%);
+  }
+  .farm-grid{position:relative;z-index:2;display:grid;grid-template-columns:.9fr 1.1fr;gap:80px;align-items:center;margin-top:70px;}
+  @media(max-width:900px){.farm-grid{grid-template-columns:1fr;}}
+  .farm-grid h2{color:var(--cream);text-align:left;margin:0;}
+  .farm-copy p{margin-top:22px;font-weight:300;line-height:1.85;color:rgba(248,245,240,.75);max-width:480px;}
+  .timeline{display:flex;flex-direction:column;gap:0;}
+  .tl-item{
+    display:grid;grid-template-columns:70px 1fr;gap:24px;padding:28px 0;
+    border-top:1px solid rgba(248,245,240,.14);position:relative;
+  }
+  .tl-item:last-child{border-bottom:1px solid rgba(248,245,240,.14);}
+  .tl-item .yr{font-family:'Fraunces',serif;font-style:italic;color:var(--gold);font-size:1.1rem;}
+  .tl-item h4{font-weight:500;font-size:1.05rem;margin-bottom:6px;}
+  .tl-item p{font-size:.88rem;color:rgba(248,245,240,.6);font-weight:300;line-height:1.7;}
+
+  /* HEALTH BENEFITS */
+  #health{background:var(--cream);}
+  .health-grid{margin-top:80px;display:grid;grid-template-columns:repeat(5,1fr);gap:24px;}
+  @media(max-width:1100px){.health-grid{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:560px){.health-grid{grid-template-columns:1fr;}}
+  .health-card{
+    text-align:center;padding:44px 20px;border-radius:20px;background:var(--white);
+    border:1px solid rgba(33,64,50,.08);transition:transform .5s ease,box-shadow .5s ease;
+  }
+  .health-card:hover{transform:translateY(-8px);box-shadow:0 30px 60px -30px rgba(33,64,50,.25);}
+  .health-num{
+    font-family:'Fraunces',serif;font-size:2.6rem;color:var(--forest);margin-bottom:6px;font-weight:400;
+  }
+  .health-num span{color:var(--gold);}
+  .health-card .lab{font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:#5a6a62;}
+
+  /* REVIEWS */
+  #reviews{background:var(--cream-2);}
+  .review-track{margin-top:80px;display:flex;gap:26px;overflow-x:auto;padding-bottom:10px;scroll-snap-type:x mandatory;}
+  .review-track::-webkit-scrollbar{height:4px;}
+  .review-track::-webkit-scrollbar-thumb{background:var(--gold);border-radius:4px;}
+  .review-card{
+    scroll-snap-align:start;min-width:340px;background:rgba(255,255,255,.6);backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,.7);border-radius:22px;padding:38px;flex-shrink:0;
+  }
+  .stars{color:var(--gold);letter-spacing:2px;margin-bottom:18px;font-size:.9rem;}
+  .review-card p{font-size:.95rem;line-height:1.75;color:#3b4a43;font-weight:300;}
+  .reviewer{display:flex;align-items:center;gap:14px;margin-top:26px;}
+  .avatar{width:44px;height:44px;border-radius:50%;background:var(--forest);color:var(--cream);
+    display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:1rem;}
+  .reviewer .name{font-weight:600;font-size:.9rem;color:var(--forest-2);}
+  .reviewer .loc{font-size:.78rem;color:#5a6a62;}
+
+  /* GALLERY */
+  #gallery{background:var(--cream);}
+  .masonry{margin-top:80px;column-count:3;column-gap:20px;}
+  @media(max-width:900px){.masonry{column-count:2;}}
+  @media(max-width:560px){.masonry{column-count:1;}}
+  .g-item{
+    break-inside:avoid;margin-bottom:20px;border-radius:18px;overflow:hidden;position:relative;
+  }
+  .g-item img{width:100%;display:block;transition:transform .7s cubic-bezier(.16,1,.3,1);}
+  .g-item:hover img{transform:scale(1.08);}
+  .g-item::after{
+    content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 60%,rgba(21,42,33,.55));
+    opacity:0;transition:opacity .5s ease;
+  }
+  .g-item:hover::after{opacity:1;}
+
+  /* CTA BANNER */
+  #cta{
+    background:linear-gradient(120deg,var(--forest) 0%, var(--forest-2) 100%);color:var(--cream);
+    text-align:center;position:relative;overflow:hidden;
+  }
+  #cta::before{
+    content:'';position:absolute;width:700px;height:700px;border-radius:50%;
+    background:radial-gradient(circle,rgba(200,169,106,.18),transparent 70%);top:-300px;left:50%;transform:translateX(-50%);
+  }
+  #cta h2{color:var(--cream);position:relative;z-index:2;}
+  #cta p{position:relative;z-index:2;color:rgba(248,245,240,.7);max-width:520px;margin:22px auto 0;font-weight:300;}
+  .cta-btn{
+    position:relative;z-index:2;margin-top:44px;display:inline-block;padding:18px 48px;border-radius:999px;
+    background:var(--gold);color:var(--forest-2);font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;
+    transition:transform .4s cubic-bezier(.16,1,.3,1), box-shadow .4s ease;
+  }
+  .cta-btn:hover{transform:translateY(-4px);box-shadow:0 20px 40px -10px rgba(200,169,106,.5);}
+
+  /* FOOTER */
+  footer{background:var(--forest-2);color:rgba(248,245,240,.8);padding:90px 6vw 34px;}
+  .foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1.2fr;gap:50px;padding-bottom:60px;border-bottom:1px solid rgba(248,245,240,.12);}
+  @media(max-width:900px){.foot-grid{grid-template-columns:repeat(2,1fr);}}
+  .foot-brand{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-size:1.3rem;color:var(--cream);margin-bottom:16px;}
+  .foot-brand img{height:32px;filter:brightness(0) invert(1);}
+  footer h5{font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:20px;}
+  footer ul{list-style:none;display:flex;flex-direction:column;gap:12px;font-size:.9rem;font-weight:300;}
+  footer p.small{font-size:.88rem;font-weight:300;line-height:1.7;max-width:320px;color:rgba(248,245,240,.6);}
+  .newsletter-row{display:flex;margin-top:18px;border-bottom:1px solid rgba(248,245,240,.3);padding-bottom:10px;}
+  .newsletter-row input{
+    background:transparent;border:none;outline:none;color:var(--cream);flex:1;font-size:.9rem;font-family:'Manrope',sans-serif;
+  }
+  .newsletter-row input::placeholder{color:rgba(248,245,240,.4);}
+  .newsletter-row button{color:var(--gold);font-size:.85rem;letter-spacing:.06em;text-transform:uppercase;}
+  .social-row{display:flex;gap:14px;margin-top:24px;}
+  .social-row a{
+    width:38px;height:38px;border:1px solid rgba(248,245,240,.25);border-radius:50%;
+    display:flex;align-items:center;justify-content:center;font-size:.78rem;transition:all .35s ease;
+  }
+  .social-row a:hover{background:var(--gold);border-color:var(--gold);color:var(--forest-2);}
+  .foot-bottom{display:flex;justify-content:space-between;padding-top:30px;font-size:.78rem;color:rgba(248,245,240,.45);flex-wrap:wrap;gap:12px;}
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+
+<div id="loader">
+  <div class="mark">MooFresh</div>
+  <div class="line"><span></span></div>
+</div>
+
+<header id="siteHeader">
+  <div class="brand"><img src="assets/logo.png" alt="MooFresh logo"/> MooFresh</div>
+  <nav>
+    <ul>
+      <li><a href="#why">Why MooFresh</a></li>
+      <li><a href="#showcase">Product</a></li>
+      <li><a href="#farm">Our Farm</a></li>
+      <li><a href="#health">Benefits</a></li>
+      <li><a href="#reviews">Reviews</a></li>
+    </ul>
+  </nav>
+  <a href="#showcase" class="nav-cta">Shop Now</a>
+</header>
+
+<section id="hero">
+  <div class="blob blob-a"></div>
+  <div class="blob blob-b"></div>
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-inner">
+    <div class="hero-copy reveal in">
+      <div class="eyebrow">Sri Lanka's Finest Dairy</div>
+      <h1>Pure Goat Milk.<br><em>Naturally</em> Better.</h1>
+      <p class="lede">Bottled at the peak of freshness from grass-fed goats raised across the highlands of Sri Lanka — gentle on digestion, rich in nutrition, honest in every drop.</p>
+      <div class="hero-actions">
+        <a href="#showcase" class="btn-primary">Shop Now</a>
+        <a href="#why" class="btn-ghost">Explore Products</a>
+      </div>
+    </div>
+    <div class="hero-stage">
+      <div class="ring ring-2"></div>
+      <div class="ring ring-1"></div>
+      <div class="glass-plate"></div>
+      <div id="productWrap">
+        <img id="productImg" src="assets/product.jpg" alt="MooFresh Pure Goat Milk bottle"/>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-cue"><span>Scroll</span><div class="stick"></div></div>
+</section>
+
+<section id="why" class="section-pad">
+  <div class="kicker">The MooFresh Difference</div>
+  <h2 class="section-title">Why families across Sri Lanka choose MooFresh</h2>
+  <p class="section-sub">Every bottle carries the same promise — nothing added, nothing hidden, only what nature intended.</p>
+  <div class="why-grid">
+    <div class="why-card reveal">
+      <div class="ic">✦</div>
+      <h3>100% Fresh Goat Milk</h3>
+      <p>Collected daily and bottled within hours to preserve its natural taste and nutrients.</p>
+    </div>
+    <div class="why-card reveal">
+      <div class="ic">✦</div>
+      <h3>Farm Fresh</h3>
+      <p>Sourced directly from small highland farms we personally know and trust.</p>
+    </div>
+    <div class="why-card reveal">
+      <div class="ic">✦</div>
+      <h3>Easy to Digest</h3>
+      <p>Naturally smaller fat globules make MooFresh gentler on sensitive stomachs.</p>
+    </div>
+    <div class="why-card reveal">
+      <div class="ic">✦</div>
+      <h3>High Calcium</h3>
+      <p>A rich, naturally-occurring source of calcium to support strong bones.</p>
+    </div>
+    <div class="why-card reveal">
+      <div class="ic">✦</div>
+      <h3>High Protein</h3>
+      <p>Complete, easily-absorbed protein in every glass — for every stage of life.</p>
+    </div>
+    <div class="why-card reveal">
+      <div class="ic">✦</div>
+      <h3>No Preservatives</h3>
+      <p>Just goat milk. No additives, no shortcuts, no compromises.</p>
+    </div>
+  </div>
+</section>
+
+<section id="showcase" class="section-pad">
+  <div class="kicker">Product Showcase</div>
+  <h2 class="section-title">A bottle designed with the same care as what's inside it</h2>
+  <div class="showcase-grid">
+    <div class="showcase-visual reveal-scale">
+      <span class="showcase-tag">Signature Bottle</span>
+      <img src="assets/product.jpg" alt="MooFresh Pure Goat Milk bottle in a field"/>
+    </div>
+    <div class="showcase-copy reveal">
+      <h3 class="serif" style="font-size:1.8rem;font-weight:400;color:var(--forest-2);margin-bottom:8px;">Pure Goat Milk — 500ml</h3>
+      <p style="color:#5a6a62;font-weight:300;line-height:1.8;margin-bottom:10px;">Glass-bottled for purity, capped fresh at the farm, and delivered cold to preserve every nutrient.</p>
+      <div class="spec-list">
+        <div class="spec-row"><span class="k">Volume</span><span class="v">500 ml</span></div>
+        <div class="spec-row"><span class="k">Source</span><span class="v">Grass-fed Highland Goats</span></div>
+        <div class="spec-row"><span class="k">Additives</span><span class="v">None</span></div>
+        <div class="spec-row"><span class="k">Fat Content</span><span class="v">Naturally Balanced</span></div>
+        <div class="spec-row"><span class="k">Storage</span><span class="v">Refrigerate 2–4°C</span></div>
+      </div>
+      <div class="showcase-cta"><a href="#" class="btn-primary">Add to Cart</a></div>
+    </div>
+  </div>
+</section>
+
+<section id="farm" class="section-pad">
+  <div class="kicker" style="color:var(--gold);">Our Farm Story</div>
+  <h2 class="section-title" style="color:var(--cream);">From highland pastures to your table</h2>
+  <div class="farm-grid">
+    <div class="farm-copy">
+      <p>MooFresh began with a simple belief — that goat milk, done right, could be Sri Lanka's most trusted everyday luxury. We work with small highland farms where goats graze freely on open pasture, exactly as nature intended.</p>
+      <p>Every bottle is a promise kept between our farmers, our goats, and your family.</p>
+    </div>
+    <div class="timeline">
+      <div class="tl-item reveal"><div class="yr">Sourcing</div><div><h4>Highland Pastures</h4><p>Goats graze freely across open highland farmland, free of hormones and confinement.</p></div></div>
+      <div class="tl-item reveal"><div class="yr">Milking</div><div><h4>Gentle, Daily Care</h4><p>Milked each morning by hand-trained farmers who treat every animal with respect.</p></div></div>
+      <div class="tl-item reveal"><div class="yr">Bottling</div><div><h4>Fresh Within Hours</h4><p>Chilled and bottled the same day to lock in freshness and nutrition.</p></div></div>
+      <div class="tl-item reveal"><div class="yr">Delivery</div><div><h4>Cold Chain, Always</h4><p>Delivered cold, straight to your door across Sri Lanka.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="health" class="section-pad">
+  <div class="kicker">Health Benefits</div>
+  <h2 class="section-title">Nourishment, naturally concentrated</h2>
+  <p class="section-sub">A glass of MooFresh delivers meaningful nutrition your body can actually absorb.</p>
+  <div class="health-grid">
+    <div class="health-card reveal-scale"><div class="health-num" data-count="9"><span>9</span>g</div><div class="lab">Protein / 100ml</div></div>
+    <div class="health-card reveal-scale"><div class="health-num" data-count="134"><span>134</span>mg</div><div class="lab">Calcium / 100ml</div></div>
+    <div class="health-card reveal-scale"><div class="health-num" data-count="100"><span>100</span>%</div><div class="lab">Vitamin A Source</div></div>
+    <div class="health-card reveal-scale"><div class="health-num" data-count="100"><span>100</span>%</div><div class="lab">Vitamin D Source</div></div>
+    <div class="health-card reveal-scale"><div class="health-num" data-count="98"><span>98</span>%</div><div class="lab">Digestibility</div></div>
+  </div>
+</section>
+
+<section id="reviews" class="section-pad">
+  <div class="kicker">Customer Stories</div>
+  <h2 class="section-title">Loved by families across the island</h2>
+  <div class="review-track">
+    <div class="review-card reveal">
+      <div class="stars">★★★★★</div>
+      <p>MooFresh has replaced regular milk in our home completely. My children digest it so much better, and the taste is wonderfully clean.</p>
+      <div class="reviewer"><div class="avatar">N</div><div><div class="name">Nadeesha P.</div><div class="loc">Colombo</div></div></div>
+    </div>
+    <div class="review-card reveal">
+      <div class="stars">★★★★★</div>
+      <p>You can taste the freshness. The bottle, the branding, everything feels premium — this is a Sri Lankan brand I'm proud to buy.</p>
+      <div class="reviewer"><div class="avatar">R</div><div><div class="name">Roshan K.</div><div class="loc">Kandy</div></div></div>
+    </div>
+    <div class="review-card reveal">
+      <div class="stars">★★★★★</div>
+      <p>My doctor recommended goat milk for my son's sensitive stomach. MooFresh was the first brand he actually enjoyed drinking.</p>
+      <div class="reviewer"><div class="avatar">S</div><div><div class="name">Sanduni F.</div><div class="loc">Negombo</div></div></div>
+    </div>
+    <div class="review-card reveal">
+      <div class="stars">★★★★★</div>
+      <p>Delivery is always cold and on time. It's become part of our weekly routine now — worth every rupee.</p>
+      <div class="reviewer"><div class="avatar">A</div><div><div class="name">Amila W.</div><div class="loc">Galle</div></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="gallery" class="section-pad">
+  <div class="kicker">Gallery</div>
+  <h2 class="section-title">A closer look at the farm and the bottle</h2>
+  <div class="masonry">
+    <div class="g-item reveal"><img src="assets/product.jpg" alt="Goat milk bottle in a green field"/></div>
+    <div class="g-item reveal"><img src="assets/product.jpg" alt="MooFresh bottle close-up"/></div>
+    <div class="g-item reveal"><img src="assets/product.jpg" alt="Goat milk bottle capped with gold lid"/></div>
+    <div class="g-item reveal"><img src="assets/product.jpg" alt="MooFresh label detail"/></div>
+  </div>
+</section>
+
+<section id="cta" class="section-pad">
+  <h2>Experience Nature's Finest Goat Milk</h2>
+  <p>Join thousands of Sri Lankan families who have made the switch to pure, honest, farm-fresh goat milk.</p>
+  <a href="#showcase" class="cta-btn">Order MooFresh Today</a>
+</section>
+
+<footer>
+  <div class="foot-grid">
+    <div>
+      <div class="foot-brand"><img src="assets/logo.png" alt="MooFresh logo"/> MooFresh</div>
+      <p class="small">Pure goat milk, bottled fresh from Sri Lanka's highland farms — naturally better, every single day.</p>
+      <div class="social-row">
+        <a href="#" aria-label="Facebook">f</a>
+        <a href="#" aria-label="Instagram">ig</a>
+        <a href="#" aria-label="TikTok">tt</a>
+      </div>
+    </div>
+    <div>
+      <h5>Explore</h5>
+      <ul><li><a href="#why">Why MooFresh</a></li><li><a href="#showcase">Product</a></li><li><a href="#farm">Our Farm</a></li><li><a href="#health">Benefits</a></li></ul>
+    </div>
+    <div>
+      <h5>Contact</h5>
+      <ul><li>hello@moofresh.lk</li><li>+94 77 000 0000</li><li>Negombo, Sri Lanka</li></ul>
+    </div>
+    <div>
+      <h5>Newsletter</h5>
+      <p class="small">Get farm updates and offers, straight to your inbox.</p>
+      <div class="newsletter-row"><input type="email" placeholder="Your email"/><button>Join</button></div>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <span>© 2026 MooFresh. All rights reserved.</span>
+    <span>Crafted with care in Sri Lanka.</span>
+  </div>
+</footer>
+
+<script src="https://unpkg.com/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://unpkg.com/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
