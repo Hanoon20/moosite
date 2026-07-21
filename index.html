@@ -368,11 +368,95 @@
   }
   .social-row a:hover{background:var(--gold);border-color:var(--gold);color:var(--forest-2);}
   .foot-bottom{display:flex;justify-content:space-between;padding-top:30px;font-size:.78rem;color:rgba(248,245,240,.45);flex-wrap:wrap;gap:12px;}
+
+  /* ================= MOBILE MENU ================= */
+  #mobileMenu{
+    position:fixed;top:0;right:0;height:100vh;width:78vw;max-width:340px;
+    background:var(--forest-2);z-index:600;
+    transform:translateX(100%);transition:transform .5s cubic-bezier(.16,1,.3,1);
+    padding:110px 36px 40px;
+  }
+  #mobileMenu.open{transform:translateX(0);}
+  #mobileMenu ul{list-style:none;display:flex;flex-direction:column;gap:8px;}
+  #mobileMenu ul li a{
+    display:block;padding:16px 0;font-size:1.15rem;font-family:'Fraunces',serif;color:var(--cream);
+    border-bottom:1px solid rgba(248,245,240,.12);
+  }
+  #mobileMenu ul li a.mob-cta{
+    margin-top:18px;background:var(--gold);color:var(--forest-2);border-radius:999px;
+    text-align:center;padding:14px 0;font-family:'Manrope',sans-serif;font-size:.8rem;
+    letter-spacing:.08em;text-transform:uppercase;border-bottom:none;
+  }
+  #menuScrim{
+    position:fixed;inset:0;background:rgba(17,17,17,.4);z-index:590;
+    opacity:0;visibility:hidden;transition:opacity .5s ease, visibility .5s ease;
+  }
+  #menuScrim.open{opacity:1;visibility:visible;}
+  .nav-toggle{
+    display:none;position:relative;z-index:601;font-size:.78rem;text-transform:uppercase;
+    letter-spacing:.08em;border:1px solid var(--forest);padding:9px 18px;border-radius:999px;color:var(--forest);
+  }
+
+  /* ================= RESPONSIVE ================= */
+  @media(max-width:900px){
+    .nav-cta{display:none;}
+    .nav-toggle{display:inline-block;}
+    .section-pad{padding:100px 6vw;}
+    .hero-inner{grid-template-columns:1fr;text-align:center;gap:50px;}
+    .hero-copy p.lede{margin-left:auto;margin-right:auto;}
+    .eyebrow{justify-content:center;}
+    .hero-actions{justify-content:center;}
+    .hero-stage{height:420px;order:-1;}
+    .glass-plate{width:260px;height:260px;}
+    #productWrap{width:200px;}
+    .ring-1{width:320px;height:320px;}
+    .ring-2{width:370px;height:370px;}
+    #hero{min-height:auto;padding-top:140px;padding-bottom:70px;height:auto;}
+    .farm-grid h2{text-align:center;}
+    .farm-copy p{margin-left:auto;margin-right:auto;text-align:center;}
+  }
+
+  @media(max-width:640px){
+    header{padding:20px 5vw;}
+    header.scrolled{padding:14px 5vw;}
+    .brand{font-size:1.05rem;}
+    .brand img{height:28px;}
+    #hero h1{font-size:clamp(2.2rem,9vw,2.8rem);}
+    .lede{font-size:.95rem;}
+    .hero-actions{flex-direction:column;width:100%;}
+    .btn-primary,.btn-ghost{text-align:center;width:100%;}
+    .section-pad{padding:76px 6vw;}
+    .section-title{font-size:1.6rem;}
+    .kicker::before,.kicker::after{width:16px;}
+    .why-card{padding:36px 26px;}
+    .showcase-visual{padding:36px 22px;}
+    .showcase-grid{gap:44px;}
+    .spec-row{font-size:.85rem;padding:16px 0;}
+    .farm-grid{gap:50px;}
+    .tl-item{grid-template-columns:56px 1fr;gap:16px;padding:22px 0;}
+    .health-card{padding:32px 16px;}
+    .health-num{font-size:2.1rem;}
+    .post-card{width:230px;padding:16px;}
+    .g-item img{width:100%;}
+    #cta h2{font-size:1.7rem;}
+    .foot-grid{grid-template-columns:1fr;gap:40px;}
+    .foot-bottom{flex-direction:column;text-align:center;}
+    .cta-btn{width:100%;text-align:center;}
+    #productWrap{width:170px;}
+    .hero-stage{height:360px;}
+  }
+
+  @media(max-width:380px){
+    #hero h1{font-size:1.9rem;}
+    .section-title{font-size:1.4rem;}
+    .post-card{width:210px;}
+  }
 </style>
 </head>
 <body>
 
 <div id="cursor"></div>
+<div id="menuScrim"></div>
 
 <div id="loader">
   <div class="mark">MooFresh</div>
@@ -390,7 +474,18 @@
       <li><a href="#reviews">Reviews</a></li>
     </ul>
   </nav>
+  <a href="#" class="nav-toggle" id="navToggle">Menu</a>
   <a href="#showcase" class="nav-cta">Shop Now</a>
+  <div id="mobileMenu">
+    <ul>
+      <li><a href="#why">Why MooFresh</a></li>
+      <li><a href="#showcase">Product</a></li>
+      <li><a href="#farm">Our Farm</a></li>
+      <li><a href="#health">Benefits</a></li>
+      <li><a href="#reviews">Reviews</a></li>
+      <li><a href="#showcase" class="mob-cta">Shop Now</a></li>
+    </ul>
+  </div>
 </header>
 
 <section id="hero">
