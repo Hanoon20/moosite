@@ -1,3 +1,24 @@
+// ---------- Inject embedded images (works with no external asset hosting) ----------
+document.querySelectorAll('[data-img="logo"]').forEach(el => el.src = IMG_LOGO);
+document.querySelectorAll('[data-img="product"]').forEach(el => el.src = IMG_PRODUCT);
+
+// ---------- Lenis smooth scroll ----------
+let lenis;
+if (window.Lenis) {
+  lenis = new Lenis({
+    duration: 1.15,
+    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    smoothWheel: true,
+    wheelMultiplier: 1,
+    touchMultiplier: 1.1,
+  });
+  function raf(time) {
+    lenis.raf(time);
+    requestAnimationFrame(raf);
+  }
+  requestAnimationFrame(raf);
+}
+
 // ---------- Loader ----------
 window.addEventListener('load', () => {
   const loader = document.getElementById('loader');
@@ -128,11 +149,17 @@ healthNums.forEach(el => countIO.observe(el));
 // ---------- Smooth-ish scroll offset for anchor links (accounts for fixed header) ----------
 document.querySelectorAll('a[href^="#"]').forEach(link => {
   link.addEventListener('click', e => {
-    const target = document.querySelector(link.getAttribute('href'));
+    const href = link.getAttribute('href');
+    if (href.length < 2) return;
+    const target = document.querySelector(href);
     if (target) {
       e.preventDefault();
-      const offset = target.getBoundingClientRect().top + window.scrollY - 90;
-      window.scrollTo({ top: offset, behavior: 'smooth' });
+      if (lenis) {
+        lenis.scrollTo(target, { offset: -90, duration: 1.3 });
+      } else {
+        const offset = target.getBoundingClientRect().top + window.scrollY - 90;
+        window.scrollTo({ top: offset, behavior: 'smooth' });
+      }
     }
   });
 });
