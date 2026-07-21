@@ -38,6 +38,24 @@ if (window.matchMedia('(pointer: fine)').matches) {
   });
 }
 
+// ---------- Mobile menu ----------
+const navToggle = document.getElementById('navToggle');
+const mobileMenu = document.getElementById('mobileMenu');
+const menuScrim = document.getElementById('menuScrim');
+function closeMenu(){
+  mobileMenu.classList.remove('open');
+  menuScrim.classList.remove('open');
+}
+if (navToggle) {
+  navToggle.addEventListener('click', e => {
+    e.preventDefault();
+    mobileMenu.classList.toggle('open');
+    menuScrim.classList.toggle('open');
+  });
+  menuScrim.addEventListener('click', closeMenu);
+  mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+}
+
 // ---------- Header on scroll ----------
 const header = document.getElementById('siteHeader');
 window.addEventListener('scroll', () => {
